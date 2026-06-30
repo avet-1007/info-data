@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>info-data</title>
+  <link rel="icon" href="logo.png" type="image/png">
+  <link rel="stylesheet" href="style.css">
+  <!-- Three.js (3D model viewer) — локальная сборка (r147) для file:// -->
+</head>
+<body>
+
+<!-- TOOLBAR -->
+<div id="toolbar">
+  <h1>info-data</h1>
+  <span id="backend-badge" class="badge"></span>
+  <div class="toolbar-spacer"></div>
+  <button class="btn" id="btn-connect">💾 Подключить папку</button>
+  <button class="btn btn-accent" id="btn-project">＋ Проект</button>
+  <button class="btn" id="btn-folder">＋ Папка</button>
+  <button class="btn" id="btn-document">＋ Документ</button>
+  <button class="btn" id="btn-console">>_ Консоль</button>
+  <button class="icon-btn" id="btn-help" title="Поддерживаемые форматы"></button>
+</div>
+
+<!-- MAIN -->
+<div id="app">
+
+  <!-- SIDEBAR -->
+  <div id="sidebar">
+    <div id="sidebar-header">
+      <span data-i18n="sidebar.files">Файлы</span>
+      <div class="hdr-right">
+        <button class="icon-btn" id="hdr-settings" data-i18n-title="app.settings"></button>
+        <div id="sidebar-actions">
+          <button class="icon-btn" id="hdr-project" data-i18n-title="sidebar.newProject"></button>
+          <button class="icon-btn" id="hdr-folder" data-i18n-title="sidebar.newFolder"></button>
+          <button class="icon-btn" id="hdr-document" data-i18n-title="sidebar.newDocument"></button>
+        </div>
+      </div>
+    </div>
+    <div id="tree"></div>
+  </div>
+
+  <div id="resizer"></div>
+
+  <!-- WORKSPACE -->
+  <div id="workspace">
+
+    <!-- EDITOR -->
+    <div id="editor-panel" style="display:none;">
+      <div id="editor-header">
+        <span id="editor-title"></span>
+        <span id="lang-badge"></span>
+        <div id="mode-switch">
+          <button class="mode-btn" data-mode="edit" data-i18n="mode.edit">Редактор</button>
+          <button class="mode-btn" data-mode="split" data-i18n="mode.split">Сплит</button>
+          <button class="mode-btn" data-mode="preview" data-i18n="mode.preview">Просмотр</button>
+        </div>
+        <span id="save-status"></span>
+      </div>
+
+      <div id="editor-area">
+        <div id="edit-wrap">
+          <pre id="highlight" aria-hidden="true"><code></code></pre>
+          <textarea id="editor-textarea" spellcheck="false" autocomplete="off"
+                    autocorrect="off" autocapitalize="off" wrap="soft"></textarea>
+          <div id="monaco-host"></div>
+        </div>
+        <div id="split-resizer" title="Перетащите, чтобы изменить ширину"></div>
+        <div id="preview-wrap">
+          <div id="preview" class="markdown-body"></div>
+          <iframe id="preview-frame" sandbox="allow-scripts" referrerpolicy="no-referrer"></iframe>
+        </div>
+      </div>
+      <!-- 3D model viewer (shown instead of editor-area for .glb/.gltf/.obj/… files) -->
+      <div id="viewer-host"></div>
+      <!-- diagrams.net editor for .drawio files -->
+      <div id="drawio-host"></div>
+      <!-- images / video / audio / zip -->
+      <div id="media-host"></div>
+    </div>
+
+    <!-- WELCOME -->
+    <div id="welcome">
+      <div class="welcome-icon">🗂</div>
+      <h2>info-data</h2>
+      <p data-i18n="welcome.subtitle">Создайте проект или откройте документ</p>
+      <p class="welcome-hint" data-i18n="welcome.formatsTitle">Поддерживаемые форматы:</p>
+      <div id="welcome-formats"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CONSOLE PANEL -->
+<div id="console-panel">
+  <div id="console-resizer" title="Перетащите, чтобы изменить высоту"></div>
+  <div id="console-header">
+    <span data-i18n="console.title">Консоль файловой системы</span>
+    <span class="console-hint" data-i18n="console.hint">help — список команд</span>
+    <button id="console-close">✕</button>
+  </div>
+  <div id="console-output"></div>
+  <div id="console-hints"></div>
+  <div id="console-inputline">
+    <span id="console-prompt">/ ❯</span>
+    <div id="console-field">
+      <div id="console-ghost"><span class="ghost-typed"></span><span class="ghost-rest"></span></div>
+      <input type="text" id="console-input" spellcheck="false" autocomplete="off" data-i18n-ph="console.ph" placeholder="введите команду…  (Tab — дополнить)">
+    </div>
+  </div>
+</div>
+
+<!-- CONTEXT MENU -->
+<div id="ctx-menu"></div>
+
+<!-- MODAL -->
+<div id="modal-overlay">
+  <div id="modal">
+    <h3 id="modal-title"></h3>
+    <input type="text" id="modal-input" autocomplete="off">
+    <div id="modal-extra"></div>
+    <div id="modal-actions">
+      <button class="btn" id="modal-cancel" data-i18n="modal.cancel">Отмена</button>
+      <button class="btn btn-accent" id="modal-ok">OK</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUPPORTED FORMATS MODAL -->
+<div id="formats-overlay">
+  <div id="formats-modal">
+    <div id="formats-head">
+      <h3 data-i18n="formats.title">Поддерживаемые форматы</h3>
+      <button class="icon-btn" id="formats-close"></button>
+    </div>
+    <div id="formats-body"></div>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div id="settings-overlay">
+  <div id="settings-modal">
+    <div id="settings-head">
+      <h3 data-i18n="settings.title">Настройки</h3>
+      <button class="icon-btn" id="settings-close"></button>
+    </div>
+    <div id="settings-body"></div>
+  </div>
+</div>
+
+<script src="three-bundle.js"></script>
+<script src="i18n.js"></script>
+<script src="fs.js"></script>
+<script src="markdown.js"></script>
+<script src="filetypes.js"></script>
+<script src="icons.js"></script>
+<script src="formats.js"></script>
+<script src="settings.js"></script>
+<script src="editor.js"></script>
+<script src="viewer.js"></script>
+<script src="drawio.js"></script>
+<script src="media.js"></script>
+<script src="console.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
