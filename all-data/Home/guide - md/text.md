@@ -1,5 +1,8 @@
+![Image](https://avet0.wordpress.com/wp-content/uploads/2026/07/tecst-2.png?w=1024)
 
+---
 ## TEXT!!!
+
 
 Written word
 Text (literary theory), any object that can be read, including:
