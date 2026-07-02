@@ -60,7 +60,8 @@ class Shell {
             '  mv <src> <dst>      move / rename',
             '  cp <src> <dst>      copy a file',
             '  tree [path]         print the tree',
-            '  find <term> [path]  search names under path',
+              '  find <term> [path]  search names under path',
+            '  ai <prompt>          ask AI assistant',
             '  echo <text>         print text',
             '  clear               clear the console',
           );
@@ -221,6 +222,19 @@ class Shell {
           };
           await walk(base);
           out(...(hits.length ? hits : ['(no matches)']));
+          break;
+        }
+
+        case 'ai': {
+          const aiCmd = window.AI && AI.makeShellCommand && AI.makeShellCommand(this);
+          if (aiCmd) {
+            const r = await aiCmd(args);
+            if (r.error) error = true;
+            for (const l of r.lines) out(l);
+          } else {
+            out('AI not available');
+            error = true;
+          }
           break;
         }
 

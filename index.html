@@ -20,6 +20,7 @@
   <button class="btn" id="btn-folder">＋ Папка</button>
   <button class="btn" id="btn-document">＋ Документ</button>
   <button class="btn" id="btn-console">>_ Консоль</button>
+  <button class="btn" id="btn-ai">🤖 AI</button>
   <button class="icon-btn" id="btn-help" title="Поддерживаемые форматы"></button>
 </div>
 
@@ -90,6 +91,25 @@
       <div id="welcome-formats"></div>
     </div>
 
+  </div>
+
+  <!-- AI PANEL (right side) -->
+  <div id="ai-resizer" title="Перетащите, чтобы изменить ширину"></div>
+  <div id="ai-panel">
+    <div id="ai-header">
+      <span data-i18n="ai.title">AI ассистент</span>
+      <span id="ai-status"></span>
+      <button id="ai-close">✕</button>
+    </div>
+    <div id="ai-output"></div>
+    <div id="ai-sys-row">
+      <span class="ai-sys-label" data-i18n="ai.system">Системный промпт:</span>
+      <input type="text" id="ai-sys" data-i18n-ph="ai.systemPh" placeholder="You are a helpful assistant.">
+    </div>
+    <div id="ai-inputline">
+      <textarea id="ai-input" rows="1" data-i18n-ph="ai.ph" placeholder="Напишите запрос AI…"></textarea>
+      <button id="ai-send" class="btn btn-accent" data-i18n="ai.send">Отправить</button>
+    </div>
   </div>
 </div>
 
@@ -163,6 +183,7 @@
 <script src="drawio.js"></script>
 <script src="media.js"></script>
 <script src="console.js"></script>
+<script src="ai.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

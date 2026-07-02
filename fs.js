@@ -56,7 +56,7 @@ class IDBBackend {
 
   async init() {
     this.db = await new Promise((resolve, reject) => {
-      const req = indexedDB.open('info-data-fs', 1);
+      const req = indexedDB.open('info-data-fs-v2', 1);
       req.onupgradeneeded = () => {
         const db = req.result;
         if (!db.objectStoreNames.contains('nodes')) {

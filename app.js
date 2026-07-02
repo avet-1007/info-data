@@ -8,6 +8,7 @@ let selectedPath = null;     // currently selected node
 let selectedType = null;     // 'dir' | 'file' of the selected node
 let openFilePath = null;     // file open in the editor
 let currentLang = 'text';    // language of the open file
+
 let viewMode = localStorage.getItem('info-data-view') || 'split'; // edit | split | preview
 let openDirs = new Set(JSON.parse(localStorage.getItem('info-data-open') || '["/"]'));
 let saveTimer = null;
@@ -134,6 +135,16 @@ function actionBtn(iconName, title, onClick, cls) {
   b.addEventListener('click', onClick);
   return b;
 }
+
+// Expose key functions for AI and other modules (namespaced, no shadowing)
+window.appAPI = {
+  refreshTree: () => refreshTree(),
+  openFile: (path) => openFile(path),
+  getEditorContent: () => Editor && Editor.getValue ? Editor.getValue() : '',
+  getEditorLang: () => currentLang,
+  getOpenFile: () => openFilePath,
+  listFiles: async (dir) => fs ? await fs.list(dir) : [],
+};
 
 // Update selection state + highlight without rebuilding the tree.
 function setSelected(node, row) {
@@ -485,6 +496,7 @@ function initIcons() {
   $('btn-folder').innerHTML   = Icon('folder-plus', { size: 15 }) + `<span>${t('app.folder')}</span>`;
   $('btn-document').innerHTML = Icon('file-plus', { size: 15 }) + `<span>${t('app.document')}</span>`;
   $('btn-console').innerHTML  = Icon('terminal', { size: 15 }) + `<span>${t('app.console')}</span>`;
+  $('btn-ai').innerHTML       = Icon('sparkles', { size: 15 }) + `<span>${t('app.ai')}</span>`;
   $('hdr-settings').innerHTML = Icon('settings', { size: 16 });
   $('hdr-project').innerHTML  = Icon('package', { size: 16 });
   $('hdr-folder').innerHTML   = Icon('folder-plus', { size: 16 });
@@ -594,7 +606,7 @@ let histIndex = -1;
 const COMMANDS = {
   help: 'cmd.help', pwd: 'cmd.pwd', ls: 'cmd.ls', cd: 'cmd.cd', project: 'cmd.project',
   mkdir: 'cmd.mkdir', touch: 'cmd.touch', write: 'cmd.write', cat: 'cmd.cat', open: 'cmd.open',
-  rm: 'cmd.rm', mv: 'cmd.mv', cp: 'cmd.cp', tree: 'cmd.tree', find: 'cmd.find', echo: 'cmd.echo', clear: 'cmd.clear',
+  rm: 'cmd.rm', mv: 'cmd.mv', cp: 'cmd.cp', tree: 'cmd.tree', find: 'cmd.find', ai: 'cmd.ai', echo: 'cmd.echo', clear: 'cmd.clear',
 };
 const PATH_CMDS = new Set(['ls','cd','cat','open','rm','mv','cp','tree','find','touch','mkdir','write']);
 let applySuggestion = null;   // invoked on Tab — applies the selected suggestion
@@ -609,6 +621,7 @@ function bindShell() {
     onOpen: p => openFile(p),
     onClear: () => { consoleOut.innerHTML = ''; },
   });
+  window.appShell = shell;
   updatePrompt();
 }
 function updatePrompt() { consolePrompt.textContent = (shell ? shell.cwd : '/') + ' ❯'; }
@@ -770,6 +783,11 @@ $('btn-console').addEventListener('click', () =>
   consolePanel.classList.contains('open') ? closeConsole() : openConsole());
 $('console-close').addEventListener('click', closeConsole);
 
+// ── AI panel ──────────────────────────────────────────────────────────────────
+$('btn-ai').addEventListener('click', () => AI.toggle());
+$('ai-close').addEventListener('click', () => AI.close());
+try { AI.init(); } catch (e) { console.warn('AI init:', e); }
+
 // ── Resizable panels ────────────────────────────────────────────────────────
 // One drag helper for every divider. Listeners are attached per-drag and torn
 // down on mouseup, and a body class disables text selection + iframe pointer
@@ -822,6 +840,16 @@ startDrag($('console-resizer'), 'row-resize', e => {
   Editor.layout();
 }, () => consolePanel.classList.add('resizing'), () => consolePanel.classList.remove('resizing'));
 
+// AI panel width (right-side panel)
+startDrag($('ai-resizer'), 'col-resize', e => {
+  const p = $('ai-panel');
+  const rect = p.parentElement.getBoundingClientRect();
+  const w = Math.max(220, Math.min(600, rect.right - e.clientX));
+  p.style.width = w + 'px';
+  localStorage.setItem('info-data-ai-w', w);
+  Editor.layout();
+}, () => $('ai-panel').classList.add('resizing'), () => $('ai-panel').classList.remove('resizing'));
+
 // Keep an open console from overflowing when the window shrinks.
 window.addEventListener('resize', () => {
   if (consolePanel.classList.contains('open')) {
@@ -835,6 +863,8 @@ window.addEventListener('resize', () => {
   if (sw) sidebar.style.width = sw + 'px';
   const sr = +localStorage.getItem('info-data-split');
   if (sr) editorArea.style.setProperty('--split', (sr * 100).toFixed(2) + '%');
+  const aw = +localStorage.getItem('info-data-ai-w');
+  if (aw && $('ai-panel').classList.contains('open')) $('ai-panel').style.width = aw + 'px';
 })();
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
