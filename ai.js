@@ -493,8 +493,8 @@ const AI = (() => {
             ],
             max_tokens: 4000,
             stream: false,
-            diffusing: true,
-            reasoning_effort: 'instant',
+          diffusing: false,
+          reasoning_effort: 'high',
           }),
         });
         const data = await res.json();
