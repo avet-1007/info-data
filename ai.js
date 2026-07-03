@@ -409,8 +409,8 @@ const AI = (() => {
           ],
           max_tokens: 16000,
           stream: true,
-          diffusing: true,
-          reasoning_effort: 'instant',
+          diffusing: false,
+          reasoning_effort: 'high',
         }),
         signal: abortController.signal,
       });
