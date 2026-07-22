@@ -5,70 +5,93 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Справка по Markdown</title>
     <style>
-        /* Общие стили для страницы */
+        /* Общие стили для страницы (Dark Mode) */
         body {
             font-family: sans-serif;
-            background-color: #ffffff;
-            color: #202122;
+            background-color: #121212;
+            color: #e0e0e0;
             padding: 20px;
             line-height: 1.6;
         }
 
-        /* Стили для таблицы в стиле Википедии */
+        /* Стили для таблицы */
         .wikitable {
-            background-color: #f8f9fa;
-            color: #202122;
+            background-color: #1e1e1e;
+            color: #e0e0e0;
             margin: 1em 0;
-            border: 1px solid #a2a9b1;
+            border: 1px solid #333333;
             border-collapse: collapse;
             width: 100%;
         }
 
         .wikitable th, .wikitable td {
-            border: 1px solid #a2a9b1;
+            border: 1px solid #333333;
             padding: 10px;
         }
 
         .wikitable th {
-            background-color: #eaecf0;
+            background-color: #2a2a2a;
+            color: #ffffff;
             text-align: center;
             font-weight: bold;
         }
 
-        /* Оформление блоков с кодом */
+        /* Блоки с кодом */
         .mw-highlight pre {
-            background-color: #f8f9fa;
-            border: 1px solid #eaecf0;
+            background-color: #181818;
+            border: 1px solid #333333;
             padding: 10px;
             margin: 0;
             font-family: monospace;
             font-size: 13px;
             white-space: pre-wrap;
             overflow-x: auto;
+            color: #d4d4d4;
         }
 
-        /* Базовая подсветка синтаксиса для классов Википедии */
-        .mw-highlight .gh, .mw-highlight .gu { color: #000080; font-weight: bold; } /* Заголовки Markdown */
-        .mw-highlight .nt { color: #000080; } /* Теги HTML */
-        .mw-highlight .na { color: #008080; } /* Атрибуты HTML */
-        .mw-highlight .s { color: #dd1144; }  /* Строки HTML */
-        .mw-highlight .p { color: #999999; }  /* Знаки препинания/скобки */
+        /* Подсветка синтаксиса */
+        .mw-highlight .gh, .mw-highlight .gu { color: #569cd6; font-weight: bold; }
+        .mw-highlight .nt { color: #569cd6; }
+        .mw-highlight .na { color: #9cdcfe; }
+        .mw-highlight .s { color: #ce9178; }
+        .mw-highlight .p { color: #808080; }
+        .mw-highlight .ge { color: #d4d4d4; font-style: italic; }
+        .mw-highlight .gs { color: #d4d4d4; font-weight: bold; }
+        .mw-highlight .sb { color: #ce9178; }
+        .mw-highlight .k { color: #569cd6; }
 
-        /* Стили для цитат (blockquote) в третьей колонке */
+        /* Цитаты */
         blockquote {
-            border-left: 4px solid #eaecf0;
+            border-left: 4px solid #444444;
             padding-left: 15px;
             margin: 10px 0;
-            color: #54595d;
+            color: #aaaaaa;
             font-style: italic;
         }
 
-        /* Стили для тегов кода внутри текста */
+        /* Встроенный код */
         code {
-            background-color: #eaecf0;
+            background-color: #2a2a2a;
+            color: #f8f8f2;
             padding: 2px 4px;
             border-radius: 3px;
             font-family: monospace;
+        }
+
+        /* Ссылки и линии */
+        a {
+            color: #64b5f6;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #444444;
+        }
+
+        /* Перезапись inline-стилей для заголовков в превью */
+        .wikitable td div[style*="border-bottom"] {
+            border-bottom-color: #444444 !important;
+            color: #ffffff;
         }
     </style>
 </head>
